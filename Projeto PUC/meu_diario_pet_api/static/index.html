@@ -9,24 +9,46 @@
 
 <h1>🐾 Diário de Pets</h1>
 
-<h2>Cadastrar Pet</h2>
-<input id="nome" placeholder="Nome">
-<input id="idade" type="number" placeholder="Idade">
-<select id="tipo">
-  <option value="">Selecione o tipo</option>
-  <option value="Gato">Gato</option>
-  <option value="Cachorro">Cachorro</option>
-  <option value="Hamster">Hamster</option>
-  <option value="Coelho">Coelho</option>
-  <option value="Peixe">Peixe</option>
-</select>
-<input type="file" id="foto" accept="image/*">
-<button onclick="cadastrarPet()">Cadastrar</button>
+<hr class="section-divider">
 
-<h2>Meus Pets</h2>
+<h2>📝 Cadastrar Pet</h2>
+<div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap;">
+  <div>
+    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #2c5aa0;">Nome</label>
+    <input id="nome" placeholder="Ex: Rex, Miau..." maxlength="25" required style="width: 200px; height: 35px; box-sizing: border-box; padding: 5px; margin: 0;">
+  </div>
+  <div>
+    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #2c5aa0;">Idade</label>
+    <input id="idade" type="number" placeholder="Ex: 3" maxlength="2" max="99" min="0" required style="width: 70px; height: 35px; box-sizing: border-box; padding: 5px; margin: 0;">
+  </div>
+  <div>
+    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #2c5aa0;">Qual o seu pet?</label>
+    <select id="tipo" required style="width: 150px; height: 37px; box-sizing: border-box; padding: 5px; margin: 0;">
+      <option value="">Selecione o tipo</option>
+      <option value="Gato">🐱 Gato</option>
+      <option value="Cachorro">🐶 Cachorro</option>
+      <option value="Hamster">🐹 Hamster</option>
+      <option value="Coelho">🐰 Coelho</option>
+      <option value="Peixe">🐟 Peixe</option>
+    </select>
+  </div>
+  <div>
+    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #2c5aa0;">📷 Foto (opcional)</label>
+    <input type="file" id="foto" accept="image/*" style="width: 200px; height: 37px; box-sizing: border-box; padding: 5px; margin: 0;">
+  </div>
+  <div>
+    <button onclick="cadastrarPet()" style="height: 37px; padding: 0 20px; margin: 0; background-color: #4169E1; color: white; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">✅ Cadastrar</button>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<h2>🐾 Meus Pets</h2>
 <div id="pets"></div>
 
-<h2>Diário do Pet</h2>
+<hr class="section-divider">
+
+<h2>📖 Diário do Pet</h2>
 <div id="diario"></div>
 
 <script src="/static/script.js"></script>

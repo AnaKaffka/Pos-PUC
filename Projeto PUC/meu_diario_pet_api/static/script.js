@@ -7,7 +7,40 @@ const foto = document.getElementById('foto');
 const petsDiv = document.getElementById('pets');
 const diario = document.getElementById('diario');
 
+// Toast notification
+function showToast(message, isError = false) {
+  const toast = document.createElement('div');
+  toast.className = isError ? 'toast error' : 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+// Validação de formulário
+function validateForm() {
+  if (!nome.value.trim()) {
+    showToast('❌ Por favor, preencha o nome do pet!', true);
+    nome.focus();
+    return false;
+  }
+  if (!idade.value || idade.value < 0) {
+    showToast('❌ Por favor, preencha a idade do pet!', true);
+    idade.focus();
+    return false;
+  }
+  if (!tipo.value) {
+    showToast('❌ Por favor, selecione o tipo do pet!', true);
+    tipo.focus();
+    return false;
+  }
+  return true;
+}
+
 function cadastrarPet() {
+  if (!validateForm()) return;
   console.log('Cadastrar pet chamado');
   console.log('Nome:', nome.value);
   console.log('Idade:', idade.value);
@@ -31,6 +64,10 @@ function cadastrarPet() {
 }
 
 function enviarPet(fotoBase64) {
+  const btn = event.target;
+  btn.classList.add('loading');
+  btn.disabled = true;
+  
   fetch(`${API}/pets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,8 +84,22 @@ function enviarPet(fotoBase64) {
     }
     return response.json();
   })
-  .then(() => listarPets())
-  .catch(error => console.error('Erro ao cadastrar pet:', error));
+  .then(() => {
+    showToast('✅ Pet cadastrado com sucesso!');
+    nome.value = '';
+    idade.value = '';
+    tipo.value = '';
+    foto.value = '';
+    listarPets();
+  })
+  .catch(error => {
+    console.error('Erro ao cadastrar pet:', error);
+    showToast('❌ Erro ao cadastrar pet. Tente novamente.', true);
+  })
+  .finally(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  });
 }
 
 function listarPets() {
@@ -72,7 +123,7 @@ function listarPets() {
             </div>
             <div>
               <b>${p.nome}</b> (${p.tipo}, ${p.idade} anos) - ID: ${p.id}<br>
-              <button onclick="abrirDiario(${p.id})">Abrir Diário</button>
+              <button onclick="abrirDiario(${p.id})" style="background-color: #4169E1; color: white; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; padding: 8px 15px;">📖 Abrir Diário</button>
               <span onclick="excluirPet(${p.id})" class="delete-btn" title="Excluir Pet">×</span>
             </div>
           </div>
@@ -107,14 +158,17 @@ function abrirDiario(id) {
                   <b>${pet.nome}</b>
                 </div>
                 <input type="file" id="novaFoto" accept="image/*">
-                <button onclick="atualizarFoto(${id})">Atualizar Foto</button><br><br>
+                <button onclick="atualizarFoto(${id})" style="background-color: #4169E1; color: white; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; padding: 8px 15px;">📷 Atualizar Foto</button><br><br>
                 <h3>Dados do Diário</h3>
+                <label style="display: block; margin-top: 10px; font-weight: bold;">Comida Preferida</label>
                 <input id="comida" placeholder="Comida preferida" value="${diarioData.comida_preferida || ''}">
+                <label style="display: block; margin-top: 10px; font-weight: bold;">Nome Veterinário</label>
                 <input id="vet" placeholder="Veterinário" value="${diarioData.veterinario || ''}">
+                <label style="display: block; margin-top: 10px; font-weight: bold;">Data da última vacinação</label>
                 <input id="data" type="date" value="${diarioData.data_vacinacao || ''}">
+                <label style="display: block; margin-top: 10px; font-weight: bold;">Peso</label>
                 <input id="peso" type="number" placeholder="Peso" value="${diarioData.peso || ''}">
-                <input id="obs" placeholder="Observações" value="${diarioData.observacoes || ''}">
-                <button onclick="salvarDiario(${id}, ${temDiario})">${botaoTexto}</button>
+                <button onclick="salvarDiario(${id}, ${temDiario})" style="background-color: #4169E1; color: white; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; padding: 8px 15px;">💾 ${botaoTexto}</button>
               `;
               
               // Add observações section
@@ -126,7 +180,7 @@ function abrirDiario(id) {
                   <div style="font-size: 12px; margin-bottom: 5px;">
                     <span id="charCount">0</span>/500
                   </div>
-                  <button onclick="salvarObservacao(${id})">Adicionar Observação</button>
+                  <button onclick="salvarObservacao(${id})" style="background-color: #4169E1; color: white; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; padding: 8px 15px;">➕ Adicionar Observação</button>
                 </div>
               `;
               // Update character counter
@@ -178,15 +232,18 @@ function atualizarFoto(id) {
         return response.json();
       })
       .then(() => {
-        alert('Foto atualizada!');
+        showToast('✅ Foto atualizada com sucesso!');
         listarPets(); // Update the pet list
         abrirDiario(id); // Refresh the diary view
       })
-      .catch(error => console.error('Erro ao atualizar foto:', error));
+      .catch(error => {
+        console.error('Erro ao atualizar foto:', error);
+        showToast('❌ Erro ao atualizar foto.', true);
+      });
     };
     reader.readAsDataURL(file);
   } else {
-    alert('Selecione uma nova foto primeiro.');
+    showToast('⚠️ Selecione uma nova foto primeiro.', true);
   }
 }
 
@@ -206,10 +263,14 @@ function excluirPet(id) {
     })
     .then(data => {
       console.log('Dados da resposta:', data);
-      alert('Pet excluído!');
+      showToast('✅ Pet excluído com sucesso!');
+      diario.innerHTML = ''; // Clear diary
       listarPets(); // Refresh the list
     })
-    .catch(error => console.error('Erro ao excluir pet:', error));
+    .catch(error => {
+      console.error('Erro ao excluir pet:', error);
+      showToast('❌ Erro ao excluir pet.', true);
+    });
   } else {
     console.log('Confirmação cancelada');
   }
@@ -231,9 +292,9 @@ function salvarDiario(id, temDiario) {
     obs: obs ? obs.value : 'undefined'
   });
   
-  if (!comida || !vet || !data || !peso || !obs) {
+  if (!comida || !vet || !data || !peso) {
     console.error('Um ou mais campos não encontrados');
-    alert('Erro: campos do diário não encontrados');
+    showToast('❌ Erro: campos do diário não encontrados', true);
     return;
   }
   
@@ -259,13 +320,13 @@ function salvarDiario(id, temDiario) {
   })
   .then(data => {
     console.log('Dados salvos:', data);
-    const mensagem = temDiario ? 'Registro atualizado com sucesso!' : 'Registro salvo com sucesso!';
-    alert(mensagem);
+    const mensagem = temDiario ? '✅ Registro atualizado com sucesso!' : '✅ Registro salvo com sucesso!';
+    showToast(mensagem);
     abrirDiario(id);
   })
   .catch(error => {
     console.error('Erro ao salvar diario:', error);
-    alert('Erro ao salvar: ' + error.message);
+    showToast('❌ Erro ao salvar: ' + error.message, true);
   });
 }
 
@@ -276,17 +337,17 @@ function salvarObservacao(petId) {
   
   if (!dataObs || !textoObs) {
     console.error('Campos de observação não encontrados');
-    alert('Erro: campos não encontrados');
+    showToast('❌ Erro: campos não encontrados', true);
     return;
   }
   
   if (!dataObs.value || !textoObs.value) {
-    alert('Preencha a data e o texto da observação');
+    showToast('⚠️ Preencha a data e o texto da observação', true);
     return;
   }
   
   if (textoObs.value.length > 500) {
-    alert('O texto não pode ter mais de 500 caracteres');
+    showToast('⚠️ O texto não pode ter mais de 500 caracteres', true);
     return;
   }
   
@@ -310,12 +371,12 @@ function salvarObservacao(petId) {
     document.getElementById('dataObservacao').value = '';
     document.getElementById('textoObservacao').value = '';
     document.getElementById('charCount').textContent = '0';
-    alert('Observação adicionada!');
+    showToast('✅ Observação adicionada com sucesso!');
     abrirDiario(petId);
   })
   .catch(error => {
     console.error('Erro ao salvar observação:', error);
-    alert('Erro ao salvar: ' + error.message);
+    showToast('❌ Erro ao salvar: ' + error.message, true);
   });
 }
 
@@ -334,13 +395,16 @@ function deletarObservacao(obsId) {
     })
     .then(data => {
       console.log('Observação deletada:', data);
-      alert('Observação removida!');
+      showToast('✅ Observação removida com sucesso!');
       // Get the pet ID from the currently displayed diario
       // We need to pass it somehow - for now, we'll refetch the diary
       const petName = document.querySelector('[onclick*="abrirDiario"]')?.textContent || '';
       location.reload();
     })
-    .catch(error => console.error('Erro ao deletar observação:', error));
+    .catch(error => {
+      console.error('Erro ao deletar observação:', error);
+      showToast('❌ Erro ao deletar observação.', true);
+    });
   }
 }
 

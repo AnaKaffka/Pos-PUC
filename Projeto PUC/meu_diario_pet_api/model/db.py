@@ -40,11 +40,11 @@ def criar_tabelas():
         )
     """)
 
-    # Add foto column if not exists
+    # Adiciona coluna se não existir
     try:
         cur.execute("ALTER TABLE pets ADD COLUMN foto TEXT")
     except:
-        pass  # Column already exists
+        pass  # A coluna já existe
 
     conn.commit()
     conn.close()

@@ -25,7 +25,7 @@ class Pet:
         for p in pets:
             pet_dict = {"id": p[0], "nome": p[1], "idade": p[2], "tipo": p[3], "foto": p[4]}
             
-            # Get diary entry (only one per pet now)
+            # Busca informações do diário associadas ao pet
             conn = conectar()
             cur = conn.cursor()
             cur.execute("SELECT comida_preferida, veterinario, data_vacinacao, peso FROM diario WHERE pet_id=? LIMIT 1", (p[0],))
