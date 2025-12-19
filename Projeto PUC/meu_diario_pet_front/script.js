@@ -55,8 +55,10 @@ function listarPets() {
   fetch(`${API}/pets`)
     .then(r => r.json())
     .then(pets => {
+      console.log('Pets recebidos:', pets);
       petsDiv.innerHTML = "";
       pets.forEach(p => {
+        console.log('Pet ID:', p.id, 'Nome:', p.nome);
         const img = p.foto ? `<img src="${p.foto}" alt="Foto do pet" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 15px;">` : '';
         const comida = p.ultima_comida ? `🥩 ${p.ultima_comida}<br>` : '';
         const vacinacao = p.ultima_vacinacao ? `💉 ${p.ultima_vacinacao}<br>` : '';
@@ -70,7 +72,7 @@ function listarPets() {
               </div>
             </div>
             <div>
-              <b>${p.nome}</b> (${p.tipo})<br>
+              <b>${p.nome}</b> (${p.tipo}) - ID: ${p.id}<br>
               <button onclick="abrirDiario(${p.id})">Abrir Diário</button>
               <span onclick="excluirPet(${p.id})" class="delete-btn" title="Excluir Pet">×</span>
             </div>

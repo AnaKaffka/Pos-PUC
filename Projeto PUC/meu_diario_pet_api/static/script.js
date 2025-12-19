@@ -71,7 +71,7 @@ function listarPets() {
               </div>
             </div>
             <div>
-              <b>${p.nome}</b> (${p.tipo}, ${p.idade} anos)<br>
+              <b>${p.nome}</b> (${p.tipo}, ${p.idade} anos) - ID: ${p.id}<br>
               <button onclick="abrirDiario(${p.id})">Abrir Diário</button>
               <span onclick="excluirPet(${p.id})" class="delete-btn" title="Excluir Pet">×</span>
             </div>
