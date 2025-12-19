@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Diário de Pets</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🐾 Diário de Pets</h1>
+
+<h2>Cadastrar Pet</h2>
+<input id="nome" placeholder="Nome">
+<input id="idade" type="number" placeholder="Idade">
+<select id="tipo">
+  <option value="">Selecione o tipo</option>
+  <option value="Gato">Gato</option>
+  <option value="Cachorro">Cachorro</option>
+  <option value="Hamster">Hamster</option>
+  <option value="Coelho">Coelho</option>
+  <option value="Peixe">Peixe</option>
+</select>
+<input type="file" id="foto" accept="image/*">
+<button onclick="cadastrarPet()">Cadastrar</button>
+
+<h2>Meus Pets</h2>
+<div id="pets"></div>
+
+<h2>Diário do Pet</h2>
+<div id="diario"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

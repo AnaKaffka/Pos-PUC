@@ -1,0 +1,181 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Diário de Pets API",
+    "version": "1.0",
+    "description": "API para gerenciar informações de pets e seus diários de cuidados."
+  },
+  "host": "127.0.0.1:5000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Home",
+        "responses": {
+          "200": {
+            "description": "Welcome message"
+          }
+        }
+      }
+    },
+    "/pets": {
+      "get": {
+        "summary": "Listar pets",
+        "responses": {
+          "200": {
+            "description": "Lista de pets"
+          }
+        }
+      },
+      "post": {
+        "summary": "Cadastrar pet",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "pet",
+            "schema": {
+              "$ref": "#/definitions/PetCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Pet cadastrado"
+          }
+        }
+      }
+    },
+    "/pets/{id}": {
+      "get": {
+        "summary": "Buscar pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pet encontrado"
+          },
+          "404": {
+            "description": "Pet não encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar foto do pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "pet",
+            "schema": {
+              "$ref": "#/definitions/PetUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Foto atualizada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pet removido"
+          }
+        }
+      }
+    },
+    "/pets/{id}/diario": {
+      "get": {
+        "summary": "Listar diario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros"
+          }
+        }
+      },
+      "post": {
+        "summary": "Adicionar registro ao diario",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "registro",
+            "schema": {
+              "$ref": "#/definitions/DiarioCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registro adicionado"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PetCreate": {
+      "type": "object",
+      "properties": {
+        "nome": {"type": "string"},
+        "idade": {"type": "integer"},
+        "tipo": {"type": "string"},
+        "foto": {"type": "string"}
+      },
+      "required": ["nome", "idade", "tipo"]
+    },
+    "PetUpdate": {
+      "type": "object",
+      "properties": {
+        "foto": {"type": "string"}
+      },
+      "required": ["foto"]
+    },
+    "DiarioCreate": {
+      "type": "object",
+      "properties": {
+        "comida_preferida": {"type": "string"},
+        "veterinario": {"type": "string"},
+        "data_vacinacao": {"type": "string"},
+        "peso": {"type": "number"},
+        "observacoes": {"type": "string"}
+      },
+      "required": ["comida_preferida", "veterinario", "data_vacinacao", "peso", "observacoes"]
+    }
+  }
+}
