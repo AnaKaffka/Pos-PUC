@@ -64,9 +64,11 @@ function cadastrarPet() {
 }
 
 function enviarPet(fotoBase64) {
-  const btn = event.target;
-  btn.classList.add('loading');
-  btn.disabled = true;
+  const btn = document.querySelector('button[onclick="cadastrarPet()"]');
+  if (btn) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+  }
   
   fetch(`${API}/pets`, {
     method: "POST",
@@ -97,8 +99,11 @@ function enviarPet(fotoBase64) {
     showToast('❌ Erro ao cadastrar pet. Tente novamente.', true);
   })
   .finally(() => {
-    btn.classList.remove('loading');
-    btn.disabled = false;
+    const btn = document.querySelector('button[onclick="cadastrarPet()"]');
+    if (btn) {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
   });
 }
 
@@ -282,14 +287,12 @@ function salvarDiario(id, temDiario) {
   const vet = document.getElementById('vet');
   const data = document.getElementById('data');
   const peso = document.getElementById('peso');
-  const obs = document.getElementById('obs');
   
   console.log('Valores:', {
     comida: comida ? comida.value : 'undefined',
     vet: vet ? vet.value : 'undefined',
     data: data ? data.value : 'undefined',
-    peso: peso ? peso.value : 'undefined',
-    obs: obs ? obs.value : 'undefined'
+    peso: peso ? peso.value : 'undefined'
   });
   
   if (!comida || !vet || !data || !peso) {
@@ -308,7 +311,7 @@ function salvarDiario(id, temDiario) {
       veterinario: vet.value,
       data_vacinacao: data.value,
       peso: parseFloat(peso.value),
-      observacoes: obs.value
+      observacoes: ''
     })
   })
   .then(response => {
