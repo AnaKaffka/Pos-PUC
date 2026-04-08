@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoDistance</title>
+    <style>
+        :root {
+            --bg: #dbe7d3;
+            --street: rgba(56, 77, 67, 0.12);
+            --street-strong: rgba(43, 60, 51, 0.18);
+            --park: rgba(121, 155, 98, 0.18);
+            --water: rgba(113, 161, 187, 0.2);
+            --panel: rgba(250, 248, 242, 0.9);
+            --border: rgba(48, 60, 53, 0.16);
+            --text: #203128;
+            --accent: #b14d2f;
+            --accent-dark: #8d3d25;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--text);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 12% 18%, var(--park) 0 90px, transparent 90px),
+                radial-gradient(circle at 80% 20%, var(--water) 0 110px, transparent 110px),
+                radial-gradient(circle at 72% 72%, var(--park) 0 130px, transparent 130px),
+                linear-gradient(90deg, transparent 0 9%, var(--street) 9% 10%, transparent 10% 19%, var(--street) 19% 20%, transparent 20% 34%, var(--street-strong) 34% 35%, transparent 35% 48%, var(--street) 48% 49%, transparent 49% 64%, var(--street) 64% 65%, transparent 65% 81%, var(--street) 81% 82%, transparent 82% 100%),
+                linear-gradient(transparent 0 8%, var(--street) 8% 9%, transparent 9% 21%, var(--street) 21% 22%, transparent 22% 39%, var(--street-strong) 39% 40%, transparent 40% 58%, var(--street) 58% 59%, transparent 59% 73%, var(--street) 73% 74%, transparent 74% 100%),
+                linear-gradient(35deg, transparent 0 43%, var(--street-strong) 43% 44%, transparent 44% 100%),
+                linear-gradient(-28deg, transparent 0 64%, var(--street) 64% 65%, transparent 65% 100%);
+            background-size: cover, cover, cover, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cg fill='none' stroke='%23405045' stroke-opacity='0.22' stroke-width='8' stroke-linecap='round'%3E%3Cpath d='M120 150 C 260 180, 340 140, 520 220 S 880 380, 1140 280 S 1410 220, 1540 310'/%3E%3Cpath d='M90 660 C 260 560, 430 620, 590 520 S 920 330, 1180 410 S 1400 520, 1540 470'/%3E%3Cpath d='M380 70 L 460 840'/%3E%3Cpath d='M980 40 L 1040 860'/%3E%3Cpath d='M140 420 L 1490 420'/%3E%3C/g%3E%3Cg fill='%23b14d2f' fill-opacity='0.55'%3E%3Ccircle cx='420' cy='418' r='9'/%3E%3Ccircle cx='1030' cy='420' r='9'/%3E%3Ccircle cx='780' cy='280' r='9'/%3E%3Ccircle cx='1210' cy='470' r='9'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: cover;
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .panel {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 420px);
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            background: var(--panel);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 24px 60px rgba(34, 43, 38, 0.18);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 4vw, 2.6rem);
+            line-height: 1;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .subtitle {
+            margin-bottom: 22px;
+            color: rgba(32, 49, 40, 0.78);
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        label {
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(47, 60, 52, 0.18);
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--text);
+            font: inherit;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px 16px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff9f3;
+            font: inherit;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        #res {
+            min-height: 28px;
+            margin-top: 18px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.58);
+            color: rgba(32, 49, 40, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <h1>GeoDistance</h1>
+        <p class="subtitle">Calcule a distância entre dois CEPs do Brasil</p>
+
+        <div class="field">
+            <label for="cep1">CEP de origem</label>
+            <input id="cep1" placeholder="22041001">
+        </div>
+
+        <div class="field">
+            <label for="cep2">CEP de destino</label>
+            <input id="cep2" placeholder="01311000">
+        </div>
+
+        <button id="calc-btn" onclick="calc()">Calcular distância</button>
+
+        <p id="res"></p>
+    </main>
+
+    <script>
+    async function calc() {
+        const cep1 = document.getElementById("cep1").value.trim();
+        const cep2 = document.getElementById("cep2").value.trim();
+        const result = document.getElementById("res");
+        const button = document.getElementById("calc-btn");
+
+        if (window.location.protocol === "file:") {
+            result.innerText = "Abra o frontend por http://localhost:8080, nao diretamente pelo arquivo local.";
+            return;
+        }
+
+        if (!/^\d{8}$/.test(cep1) || !/^\d{8}$/.test(cep2)) {
+            result.innerText = "Informe dois CEPs com 8 digitos.";
+            return;
+        }
+
+        button.disabled = true;
+        button.innerText = "Calculando...";
+        result.innerText = "Consultando APIs...";
+
+        try {
+            const r = await fetch("http://localhost:8000/distancia", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({cep_origem: cep1, cep_destino: cep2})
+            });
+
+            const data = await r.json();
+            result.innerText = data.distancia || data.detail || "Nao foi possivel calcular.";
+        } catch (error) {
+            result.innerText = "Nao foi possivel conectar com a API em http://localhost:8000.";
+        } finally {
+            button.disabled = false;
+            button.innerText = "Calcular distância";
+        }
+    }
+    </script>
+</body>
+</html>
