@@ -86,15 +86,27 @@ def calcular_distancia(data: DistanciaRequest):
     db.commit()
 
     return {
+        "id": registro.id,
         "distancia": distancia,
         "origem": endereco1,
         "destino": endereco2
     }
 
 
+@app.get("/historico", tags=["Histórico"])
+def listar_historico():
+    registros = db.query(models.Historico).order_by(models.Historico.id.desc()).all()
+    return [
+        {"id": r.id, "cep_origem": r.cep_origem, "cep_destino": r.cep_destino, "distancia": r.distancia}
+        for r in registros
+    ]
+
+
 @app.put("/historico/{id}", tags=["Histórico"])
 def atualizar(id: int, data: dict):
     registro = db.query(models.Historico).get(id)
+    if not registro:
+        raise HTTPException(404, "Registro não encontrado")
     registro.distancia = data.get("distancia")
     db.commit()
     return {"msg": "Atualizado"}
@@ -103,6 +115,8 @@ def atualizar(id: int, data: dict):
 @app.delete("/historico/{id}", tags=["Histórico"])
 def deletar(id: int):
     registro = db.query(models.Historico).get(id)
+    if not registro:
+        raise HTTPException(404, "Registro não encontrado")
     db.delete(registro)
     db.commit()
     return {"msg": "Deletado"}

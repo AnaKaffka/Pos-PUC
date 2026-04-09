@@ -1,8 +1,7 @@
-version: "3"
-
 services:
   api-principal:
-    build: ./api-principal
+    build:
+      context: .
     environment:
       SECONDARY_API_URL: http://api-secundaria:8001
     ports:
@@ -11,13 +10,14 @@ services:
       - api-secundaria
 
   api-secundaria:
-    build: ./api-secundaria
+    build:
+      context: ../api-secundaria
     ports:
       - "8001:8001"
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
     ports:
       - "8080:80"
     depends_on:

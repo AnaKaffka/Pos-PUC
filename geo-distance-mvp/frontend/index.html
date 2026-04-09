@@ -25,12 +25,14 @@
         body {
             margin: 0;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 24px;
             font-family: Georgia, "Times New Roman", serif;
             color: var(--text);
             background-color: var(--bg);
+            background-attachment: fixed;
             background-image:
                 radial-gradient(circle at 12% 18%, var(--park) 0 90px, transparent 90px),
                 radial-gradient(circle at 80% 20%, var(--water) 0 110px, transparent 110px),
@@ -41,7 +43,7 @@
                 linear-gradient(-28deg, transparent 0 64%, var(--street) 64% 65%, transparent 65% 100%);
             background-size: cover, cover, cover, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
             position: relative;
-            overflow: hidden;
+            overflow: auto;
         }
 
         body::before {
@@ -132,6 +134,355 @@
             background: rgba(255, 255, 255, 0.58);
             color: rgba(32, 49, 40, 0.9);
         }
+
+        .cep-hint {
+            font-size: 0.82rem;
+            color: rgba(32, 49, 40, 0.62);
+            min-height: 1.2em;
+            padding-left: 4px;
+            font-style: italic;
+        }
+
+        .cep-hint.erro {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .maps-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: #1a73e8;
+            color: #fff;
+            font-size: 0.85rem;
+            font-family: Arial, sans-serif;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: background 0.2s ease;
+        }
+
+        .maps-link:hover {
+            background: #1558b0;
+        }
+
+        .site-footer {
+            position: relative;
+            z-index: 1;
+            width: calc(100% + 48px);
+            margin: 28px -24px 0;
+            padding: 16px 24px;
+            background: linear-gradient(90deg, #1f1f1f, #2b2b2b);
+            color: #f8fafc;
+            font-family: Arial, sans-serif;
+            font-size: 0.92rem;
+        }
+
+        .footer-wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .footer-left {
+            color: #f1f5f9;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .site-footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            padding: 20px;
+        }
+
+        .contact-overlay.open {
+            display: flex;
+        }
+
+        .contact-modal {
+            width: min(100%, 420px);
+            background: #2d2f33;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            font-family: Arial, sans-serif;
+        }
+
+        .contact-title {
+            margin: 0 0 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .contact-email {
+            color: #93c5fd;
+            word-break: break-word;
+            text-decoration: none;
+        }
+
+        .contact-close {
+            margin-top: 16px;
+            border: 0;
+            border-radius: 999px;
+            background: #475569;
+            color: #fff;
+            padding: 8px 14px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .contact-close:hover {
+            background: #334155;
+        }
+
+        #close-history {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 1.4rem;
+            line-height: 1;
+            width: auto;
+            border-radius: 4px;
+        }
+
+        #close-history:hover {
+            background: transparent;
+            color: #f8fafc;
+            transform: none;
+        }
+
+        .terms-modal {
+            width: min(100%, 560px);
+            max-height: 80vh;
+            background: #2d2f33;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .terms-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terms-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .terms-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            line-height: 1.55;
+            font-size: 0.94rem;
+            color: #e2e8f0;
+        }
+
+        .terms-body h3 {
+            margin: 14px 0 6px;
+            font-size: 0.98rem;
+            color: #f8fafc;
+        }
+
+        .terms-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .terms-btn {
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            padding: 8px 14px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .terms-btn.secondary {
+            background: #475569;
+        }
+
+        .terms-btn.primary {
+            background: #1d4ed8;
+        }
+
+        .terms-btn.secondary:hover {
+            background: #334155;
+        }
+
+        .terms-btn.primary:hover {
+            background: #1e40af;
+        }
+
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-row button {
+            margin-top: 0;
+        }
+
+        .btn-hist {
+            padding: 14px 18px;
+            background: rgba(48, 60, 53, 0.18);
+            color: var(--text);
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
+        .btn-hist:hover {
+            background: rgba(48, 60, 53, 0.30);
+        }
+
+        .history-modal {
+            width: min(100%, 520px);
+            max-height: 80vh;
+            background: #2d2f33;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .history-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .history-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+
+        .history-empty {
+            color: #94a3b8;
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            white-space: nowrap;
+        }
+
+        .history-table th {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .history-table td:last-child {
+            text-align: right;
+        }
+
+        .btn-delete-row {
+            background: transparent;
+            border: 1px solid rgba(177, 77, 47, 0.5);
+            color: #f87171;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
+
+        .btn-delete-row:hover {
+            background: rgba(177, 77, 47, 0.25);
+            transform: none;
+        }
+
+        .history-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .record-id {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: rgba(32, 49, 40, 0.55);
+            font-style: italic;
+        }
+
+        .distance-tooltip {
+            cursor: help;
+            text-decoration: underline dotted rgba(32, 49, 40, 0.6);
+            text-underline-offset: 3px;
+        }
+
+        .lang {
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -141,20 +492,223 @@
 
         <div class="field">
             <label for="cep1">CEP de origem</label>
-            <input id="cep1" placeholder="22041001">
+            <input id="cep1" placeholder="Digite o CEP (somente numeros)" oninput="limparHint('hint1')" onblur="buscarLogradouro('cep1','hint1')">
+            <span id="hint1" class="cep-hint"></span>
         </div>
 
         <div class="field">
             <label for="cep2">CEP de destino</label>
-            <input id="cep2" placeholder="01311000">
+            <input id="cep2" placeholder="Digite o CEP (somente numeros)" oninput="limparHint('hint2')" onblur="buscarLogradouro('cep2','hint2')">
+            <span id="hint2" class="cep-hint"></span>
         </div>
 
-        <button id="calc-btn" onclick="calc()">Calcular distância</button>
+        <div class="btn-row">
+            <button id="calc-btn" onclick="calc()">Calcular distância</button>
+            <button type="button" class="btn-hist" id="open-history" title="Ver histórico" aria-label="Ver histórico">&#x1F4CB;</button>
+        </div>
 
         <p id="res"></p>
     </main>
 
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <div class="footer-left">&copy; AnaBeatrizKaffka. Todos os direitos reservados.</div>
+            <div class="footer-right">
+                <a href="#" id="open-contact">Fale conosco</a>
+                <a href="#" id="open-terms" aria-label="Termos de uso">Termos de uso</a>
+                <span class="lang">&#x1F1E7;&#x1F1F7; Português (Brasil)</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="history-popup" class="contact-overlay" aria-hidden="true">
+        <div class="history-modal" role="dialog" aria-modal="true" aria-labelledby="history-title">
+            <div class="history-header">
+                <h2 id="history-title" class="history-title">&#x1F4CB; Histórico de consultas</h2>
+                <button type="button" class="contact-close" id="close-history" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="history-body" id="history-body">
+                <p class="history-empty">Carregando...</p>
+            </div>
+            <div class="history-footer">
+                <button type="button" class="contact-close" id="close-history-footer">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="contact-popup" class="contact-overlay" aria-hidden="true">
+        <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+            <h2 id="contact-title" class="contact-title">Fale conosco</h2>
+            <p>Entre em contato pelo e-mail:</p>
+            <p><a class="contact-email" href="mailto:ana.kaffka@gmail.com">ana.kaffka@gmail.com</a></p>
+            <button type="button" class="contact-close" id="close-contact">Fechar</button>
+        </div>
+    </div>
+
+    <div id="terms-popup" class="contact-overlay" aria-hidden="true">
+        <div class="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+            <div class="terms-header">
+                <h2 id="terms-title" class="terms-title">Termos de uso</h2>
+                <button type="button" class="terms-btn secondary" id="close-terms-top">Fechar</button>
+            </div>
+            <div class="terms-body">
+                <p>Ao utilizar o GeoDistance, você concorda com os termos abaixo:</p>
+
+                <h3>1. Finalidade</h3>
+                <p>Esta aplicação tem caráter informativo e educacional para estimativa de distância entre CEPs.</p>
+
+                <h3>2. Precisão dos dados</h3>
+                <p>As distâncias são aproximadas e dependem de dados de serviços externos, podendo sofrer variações.</p>
+
+                <h3>3. Uso permitido</h3>
+                <p>É vedado uso abusivo, automatizado em massa ou que viole os termos das APIs públicas utilizadas.</p>
+
+                <h3>4. Responsabilidade</h3>
+                <p>Não garantimos disponibilidade contínua nem adequação para decisões críticas.</p>
+
+                <h3>5. Alterações</h3>
+                <p>Os termos podem ser atualizados a qualquer momento, sem aviso prévio.</p>
+            </div>
+            <div class="terms-footer">
+                <button type="button" class="terms-btn secondary" id="close-terms">Fechar</button>
+                <button type="button" class="terms-btn primary" id="accept-terms">Aceitar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+    const contactPopup = document.getElementById("contact-popup");
+    const openContact = document.getElementById("open-contact");
+    const closeContact = document.getElementById("close-contact");
+    const termsPopup = document.getElementById("terms-popup");
+    const openTerms = document.getElementById("open-terms");
+    const closeTerms = document.getElementById("close-terms");
+    const closeTermsTop = document.getElementById("close-terms-top");
+    const acceptTerms = document.getElementById("accept-terms");
+    const historyPopup = document.getElementById("history-popup");
+    const openHistory = document.getElementById("open-history");
+    const closeHistory = document.getElementById("close-history");
+    const closeHistoryFooter = document.getElementById("close-history-footer");
+
+    function abrirContato(event) {
+        event.preventDefault();
+        contactPopup.classList.add("open");
+        contactPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function fecharContato() {
+        contactPopup.classList.remove("open");
+        contactPopup.setAttribute("aria-hidden", "true");
+    }
+
+    function abrirTermos(event) {
+        event.preventDefault();
+        termsPopup.classList.add("open");
+        termsPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function fecharTermos() {
+        termsPopup.classList.remove("open");
+        termsPopup.setAttribute("aria-hidden", "true");
+    }
+
+    openContact.addEventListener("click", abrirContato);
+    closeContact.addEventListener("click", fecharContato);
+    openTerms.addEventListener("click", abrirTermos);
+    closeTerms.addEventListener("click", fecharTermos);
+    closeTermsTop.addEventListener("click", fecharTermos);
+    acceptTerms.addEventListener("click", fecharTermos);
+    openHistory.addEventListener("click", abrirHistorico);
+    closeHistory.addEventListener("click", fecharHistorico);
+    closeHistoryFooter.addEventListener("click", fecharHistorico);
+    contactPopup.addEventListener("click", function(event) {
+        if (event.target === contactPopup) fecharContato();
+    });
+    termsPopup.addEventListener("click", function(event) {
+        if (event.target === termsPopup) fecharTermos();
+    });
+    historyPopup.addEventListener("click", function(event) {
+        if (event.target === historyPopup) fecharHistorico();
+    });
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+            fecharContato();
+            fecharTermos();
+            fecharHistorico();
+        }
+    });
+
+    function fecharHistorico() {
+        historyPopup.classList.remove("open");
+        historyPopup.setAttribute("aria-hidden", "true");
+    }
+
+    async function abrirHistorico() {
+        historyPopup.classList.add("open");
+        historyPopup.setAttribute("aria-hidden", "false");
+        const body = document.getElementById("history-body");
+        body.innerHTML = '<p class="history-empty">Carregando...</p>';
+        try {
+            const r = await fetch("http://localhost:8000/historico");
+            const lista = await r.json();
+            if (!lista.length) {
+                body.innerHTML = '<p class="history-empty">Nenhuma consulta realizada ainda.</p>';
+                return;
+            }
+            const rows = lista.map(item => `
+                <tr>
+                    <td>#${item.id}</td>
+                    <td>${item.cep_origem}</td>
+                    <td>${item.cep_destino}</td>
+                    <td>${item.distancia}</td>
+                    <td><button class="btn-delete-row" onclick="deletarRegistro(${item.id})">&#x1F5D1;</button></td>
+                </tr>
+            `).join("");
+            body.innerHTML = `
+                <table class="history-table">
+                    <thead><tr><th>ID</th><th>CEP Origem</th><th>CEP Destino</th><th>Dist&acirc;ncia</th><th></th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        } catch (_) {
+            body.innerHTML = '<p class="history-empty">Não foi possível carregar o histórico.</p>';
+        }
+    }
+
+    async function deletarRegistro(id) {
+        try {
+            await fetch(`http://localhost:8000/historico/${id}`, { method: "DELETE" });
+            await abrirHistorico();
+        } catch (_) {
+            alert("Erro ao deletar registro.");
+        }
+    }
+
+    function limparHint(hintId) {
+        document.getElementById(hintId).textContent = "";
+        document.getElementById(hintId).className = "cep-hint";
+    }
+
+    async function buscarLogradouro(inputId, hintId) {
+        const cep = document.getElementById(inputId).value.trim();
+        const hint = document.getElementById(hintId);
+        if (!/^\d{8}$/.test(cep)) return;
+        try {
+            const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const d = await r.json();
+            if (d.erro) {
+                hint.textContent = "CEP não encontrado";
+                hint.className = "cep-hint erro";
+            } else {
+                const partes = [d.logradouro, d.bairro, d.localidade, d.uf].filter(Boolean);
+                hint.textContent = partes.join(", ");
+                hint.className = "cep-hint";
+            }
+        } catch (_) {
+            hint.textContent = "";
+        }
+    }
+
     async function calc() {
         const cep1 = document.getElementById("cep1").value.trim();
         const cep2 = document.getElementById("cep2").value.trim();
@@ -183,7 +737,22 @@
             });
 
             const data = await r.json();
-            result.innerText = data.distancia || data.detail || "Nao foi possivel calcular.";
+            if (data.distancia) {
+                const o = data.origem;
+                const d = data.destino;
+                const fmt = e => [e.logradouro, e.bairro, e.localidade, e.uf].filter(Boolean).join(", ");
+                const origem = fmt(o);
+                const destino = fmt(d);
+                const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origem)}&destination=${encodeURIComponent(destino)}`;
+                result.innerHTML =
+                    `<strong class="distance-tooltip" title="Distancia estimada pelo metodo de linha reta entre os CEPs. Por usar um metodo diferente do Google Maps, o valor pode variar em relacao ao trajeto real.">${data.distancia}</strong><br><br>` +
+                    `<small><b>Origem:</b> ${origem}</small><br>` +
+                    `<small><b>Destino:</b> ${destino}</small><br>` +
+                    `<a class="maps-link" href="${mapsUrl}" target="_blank" rel="noopener">&#x1F5FA; Ver trajeto no Google Maps</a>` +
+                    `<br><span class="record-id">Consulta gravada no histórico com ID #${data.id}</span>`;
+            } else {
+                result.innerText = data.detail || "Nao foi possivel calcular.";
+            }
         } catch (error) {
             result.innerText = "Nao foi possivel conectar com a API em http://localhost:8000.";
         } finally {
