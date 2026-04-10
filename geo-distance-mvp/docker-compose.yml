@@ -5,6 +5,8 @@ services:
     build: ./api-principal
     environment:
       SECONDARY_API_URL: http://api-secundaria:8001
+      SECONDARY_API_TIMEOUT: "30"
+      SECONDARY_API_RETRIES: "1"
     ports:
       - "8000:8000"
     depends_on:

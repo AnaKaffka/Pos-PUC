@@ -26,6 +26,8 @@ app.add_middleware(
 db = SessionLocal()
 VIACEP_URL = "https://viacep.com.br/ws"
 SECONDARY_API_URL = os.getenv("SECONDARY_API_URL", "http://localhost:8001")
+SECONDARY_API_TIMEOUT = float(os.getenv("SECONDARY_API_TIMEOUT", "30"))
+SECONDARY_API_RETRIES = int(os.getenv("SECONDARY_API_RETRIES", "1"))
 
 class DistanciaRequest(BaseModel):
     cep_origem: str = Field(..., example="22041001")
@@ -34,6 +36,30 @@ class DistanciaRequest(BaseModel):
 
 def validar_cep(cep: str):
     return cep.isdigit() and len(cep) == 8
+
+
+def consultar_api_secundaria(payload: dict):
+    ultima_excecao = None
+    for tentativa in range(SECONDARY_API_RETRIES + 1):
+        try:
+            return requests.post(
+                f"{SECONDARY_API_URL}/calcular",
+                json=payload,
+                timeout=SECONDARY_API_TIMEOUT,
+            )
+        except requests.Timeout as exc:
+            ultima_excecao = exc
+            if tentativa < SECONDARY_API_RETRIES:
+                continue
+            raise HTTPException(
+                504,
+                f"Timeout ao consultar API secundaria apos {SECONDARY_API_TIMEOUT}s",
+            )
+        except requests.RequestException as exc:
+            ultima_excecao = exc
+            break
+
+    raise HTTPException(502, f"Falha ao consultar a API secundaria: {ultima_excecao}")
 
 
 @app.get("/cep/{cep}", tags=["CEP"])
@@ -56,14 +82,7 @@ def calcular_distancia(data: DistanciaRequest):
     if endereco1.get("erro") or endereco2.get("erro"):
         raise HTTPException(404, "CEP não encontrado")
 
-    try:
-        response = requests.post(
-            f"{SECONDARY_API_URL}/calcular",
-            json={"cep1": cep1, "cep2": cep2},
-            timeout=10,
-        )
-    except requests.RequestException:
-        raise HTTPException(502, "Falha ao consultar a API secundária")
+    response = consultar_api_secundaria({"cep1": cep1, "cep2": cep2})
 
     if not response.ok:
         detalhe = "Falha ao consultar a API secundária"
